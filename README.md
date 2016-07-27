@@ -52,7 +52,7 @@ host machine. This is one of the biggest criticisms of Docker.
 
 ## So Let's Run a Container
 
-Type ```docker run alpine echo hi``` .
+Type ```docker run alpine echo hi```
 
 It looks like it just ran ```echo hi```.  It did. But it ran it from an
 image named 'alpine'. Alpine contains the busybox runtime so the ```echo```
@@ -63,35 +63,36 @@ Type ```docker run ubuntu echo hi```
 Wow, ```echo hi``` again.  And what was with all that downloading? In this
 case, you ran the ```echo``` command from a copy of the Ubuntu Linux filesystem.
 
-In both cases, the process ran on your Kernel (or your Docker Machine's Kerel),
+In both cases, the process ran on your kernel (or your Docker Machine's kernel),
 not a separate virtual machine. It's as if you copied the busybox or bash
 binary to your own machine and ran it.
 
-Type ```docker ps```. Your container is not listed. That's because ```ps```
+Type ```docker ps``` . Your container is not listed. That's because ```ps```
 only lists running containers by default. To see your stopped container,
 type ```docker ps -a``` .  Notice that Docker gave it a name. That's because
 you didn't give it one.  You can name a container with an option
 to  ```docker run``` but be aware only one container, stopped or running,
 can have any particular name.
 
-Type ```docker run --name hi alpine echo hi``` then ```docker ps -a```. You
-see your container was named 'hi'. Now
+Type ```docker run --name hi alpine echo hi``` then ```docker ps -a``` . You
+see your container was named 'hi.' Now
 try ```docker run --name hi alpine echo hi``` again. Whoops.
 Type ```docker rm -v hi``` to remove it then you can re-use the name.
 
 ## Make a New Image
 
-Start a container this way: ```docker run --name hello -ti alpine sh``` .
+Start a container this way: ```docker run --name hello -ti alpine sh```
 
 You are now operating the busybox shell in a container's jail. Spooky in
 here.
 
-Make a file: ```echo hello from Docker jail! > /hello.txt``` . Control-D
-to exit. ```docker ps -a``` will display your 'hello' container.
+Make a file: ```echo Hello from Docker Jail! > /hello.txt``` . See what you
+made with ```ls``` . Control-D to
+exit. ```docker ps -a``` lists your 'hello' container.
 
 Type ```docker commit hello helloworld``` . Now you've turned a snapshot
-of your container into an image, 'helloworld' . Run a command with your
-new image ```docker run helloworld cat /hello.txt``` . Cool.
+of your container's filesystem into an image, 'helloworld' . Run a command
+with your new image ```docker run helloworld cat /hello.txt``` . Cool.
 
 
 
