@@ -94,5 +94,24 @@ Type ```docker commit hello helloworld``` . Now you've turned a snapshot
 of your container's filesystem into an image, 'helloworld' . Run a command
 with your new image ```docker run helloworld cat /hello.txt``` . Cool.
 
+## Make an Image With a Dockerfile
 
+That was great and all but you really need a container image that performs
+the operations you prescribe without having to supply the shell command
+at run time.  To do this, you need to create an image with a default command.
 
+The Docker build system specifies an instruction set for describing images.
+You put your image-building instructions into a 'Dockerfile' then use the
+docker command to build your image. A Dockerfile is only one way to
+describe an image build. But it is nothing much more than what we did above:
+create a container, modify it, then commit a snapshot of it to create an
+image.
+
+Create a new directory and create a 'Dockerfile' with this content:
+```sh
+FROM alpine
+
+RUN echo Hello from a useful container! > /welcome.txt
+
+CMD ["cat", "/welcome.txt"]
+```
