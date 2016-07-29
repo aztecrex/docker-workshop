@@ -166,6 +166,24 @@ not running can supply its data to another container as one or move *volumes*.
 
 Type ```docker run --volumes-from datavolumes hellodockerfile```
 
+# Publish an Image
 
+To share an image, you can publish it in a Docker *registry*. A registry is
+made up of one or more *repositories* . A repository is usually focused on
+a particular need such as an application implementation. Within a repository,
+images can be *tagged* . The default tag when pushing an image to a repository
+is *latest*.
+
+Before you can publish, you must be logged into your registry.
+Type ```docker login``` and enter your information.
+
+Alias your image with the unfortunately named ```tag```
+command: ```docker tag helloextended <mynamespace>/helloextended``` . Use
+your own Docker Hub username instead of ```<mynamespace>``` .  Now push
+your image to your own repository
+with ```docker push <mynamespace>/helloextended``` .
+
+Try to run someone else's image
+with ```docker run <theirnamespace>/helloextended``` .
 
 
