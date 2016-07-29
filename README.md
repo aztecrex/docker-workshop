@@ -115,3 +115,44 @@ RUN echo Hello from a useful container! > /welcome.txt
 
 CMD ["cat", "/welcome.txt"]
 ```
+
+With that directory current, type ```docker build .``` .  
+The dot is important, it tells docker where to find the docker _context_; in
+this case, the context is the current directory. But you can use a full path
+to the context if it is not your current directory. Notice that the
+last line of output shows a peculiar hex number. That is actually the first
+few digits of the image name. You can actually run your image from that but
+it is often easier to give the image a friendly name.
+
+Type ```docker build -t hellodockerfile .```  to build and name the image in
+one step.
+
+Type ```docker run hellodockerfile```
+
+Sweet.
+
+
+## Extending an Image
+
+Docker containers can be combined in several ways. A fundamental way
+is by extending an image with a new file system layer. You already
+saw that you could extend the *alpine* image with customer content
+and configuration.  Let's extend your new container by replacing some
+of its data.
+
+Create a new directory and save a 'Dockerfile' with this:
+
+```sh
+FROM hellodockerfile
+
+RUN echo Hello from an extended image! > /welcome.txt
+
+```
+
+Build the container with ```docker build -t helloextended``` then
+run ```docker run helloextended``` . Notice that all that changed was
+the output string.  The command configuration and original access to
+busybox is intact.
+
+
+
