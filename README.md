@@ -159,7 +159,7 @@ busybox is intact.
 
 Another way to combine containers is by merging their data at run time.
 
-Type ```docker create --name datavolumes aztexrex/welcometext```
+Type ```docker create --name datavolumes aztecrex/welcometext```
 then ```docker ps -a | egrep datavolumes``` .  You will see that a container
 was created but it is no longer running.  Any container, even one that is
 not running can supply its data to another container as one or move *volumes*.
