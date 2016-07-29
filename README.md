@@ -111,9 +111,10 @@ Create a new directory and create a 'Dockerfile' with this content:
 ```sh
 FROM alpine
 
-RUN echo Hello from a useful container! > /welcome.txt
+RUN mkdir -p /data
+RUN echo Hello from a useful container! > /data/welcome.txt
 
-CMD ["cat", "/welcome.txt"]
+CMD ["cat", "/data/welcome.txt"]
 ```
 
 With that directory current, type ```docker build .``` .  
@@ -132,7 +133,7 @@ Type ```docker run hellodockerfile```
 Sweet.
 
 
-## Extending an Image
+## Extend an Image
 
 Docker containers can be combined in several ways. A fundamental way
 is by extending an image with a new file system layer. You already
@@ -145,14 +146,26 @@ Create a new directory and save a 'Dockerfile' with this:
 ```sh
 FROM hellodockerfile
 
-RUN echo Hello from an extended image! > /welcome.txt
+RUN echo Hello from an extended image! > /data/welcome.txt
 
 ```
 
-Build the container with ```docker build -t helloextended``` then
-run ```docker run helloextended``` . Notice that all that changed was
+Build the container with ```docker build -t helloextended .``` then
+run it with ```docker run helloextended``` . Notice that all that changed was
 the output string.  The command configuration and original access to
 busybox is intact.
+
+# Attach Data
+
+Another way to combine containers is by merging their data at run time.
+
+Type ```docker create --name datavolumes aztexrex/welcometext```
+then ```docker ps -a | egrep datavolumes``` .  You will see that a container
+was created but it is no longer running.  Any container, even one that is
+not running can supply its data to another container as one or move *volumes*.
+
+Type ```docker run --volumes-from datavolumes hellodockerfile```
+
 
 
 
