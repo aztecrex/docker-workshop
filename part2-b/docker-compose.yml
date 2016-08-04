@@ -1,15 +1,24 @@
 version: '2'
 services:
+  # these services are totally micro
   counter:
     build: ./counter-app
+    links:
+      - store:r0.dat
   motd:
     build: ./motd-app
+    links:
+      - store:r0.dat
+
+  # NoSQL for you
   store:
     image: redis
     volumes_from:
       - store_config
   store_config:
     build: ./redis-config
+
+  # Web scale
   balancer:
     image: nginx
     ports:
