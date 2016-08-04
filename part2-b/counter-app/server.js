@@ -14,7 +14,6 @@ app.get('/', function (req, res) {
   client.get('counter', function(err, counter) {
     if(err) return next(err);
     res.json({'count': counter || 0})
-    // res.send('count: ' + counter);
   });
 });
 
@@ -22,7 +21,6 @@ app.post('/', function (req, res) {
   client.incr('counter', function(err, counter) {
     if(err) return next(err);
     res.json({'count': counter || 0})
-    // res.send('count: ' + counter);
   });
 });
 
