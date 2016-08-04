@@ -2,7 +2,8 @@
 
 const express = require('express');
 const redis = require('redis');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+
 // Constants
 const PORT = 8080;
 
@@ -45,6 +46,7 @@ var fetch = function(cb) {
 // App
 const app = express();
 app.use(bodyParser.json());
+
 app.get('/', function (req, res) {
   fetch(function(err, curval){
     if(err) return next(err);
