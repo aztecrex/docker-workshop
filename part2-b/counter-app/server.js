@@ -2,6 +2,8 @@
 
 const express = require('express');
 const redis = require('redis');
+const bodyParser = require('body-parser');
+
 // Constants
 const PORT = 8080;
 
@@ -27,6 +29,8 @@ var respond = function(res,count) {
 
 // App
 const app = express();
+app.use(bodyParser.json());
+
 app.get('/', function (req, res) {
   client.get('counter', function(err, curval) {
     if(err) return next(err);
@@ -41,7 +45,8 @@ app.get('/', function (req, res) {
 });
 
 app.post('/', function (req, res) {
-  client.incr('counter', function(err, counter) {
+  var by = req.body.add || 1;
+  client.incrby('counter', by, function(err, counter) {
     if(err) return next(err);
     client.publish('counter',counter);
     respond(res,counter);
