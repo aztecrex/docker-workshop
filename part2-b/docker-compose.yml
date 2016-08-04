@@ -1,0 +1,23 @@
+version: '2'
+services:
+  counter:
+    build: ./counter-app
+  motd:
+    build: ./motd-app
+  store:
+    image: redis
+    volumes_from:
+      - store_config
+  store_config:
+    build: ./redis-config
+  balancer:
+    image: nginx
+    ports:
+      - 80:80
+    links:
+      - counter:c01.srv
+      - motd:m01.srv
+    volumes_from:
+      - balancer_config
+  balancer_config:
+    build: ./nginx-config
