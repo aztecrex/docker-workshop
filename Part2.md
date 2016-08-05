@@ -20,7 +20,7 @@ and deposit an ```index.html``` file there:
 Now do these things in Docker:
 
 0. ```docker create --name data1 -v "$(pwd)/data:/usr/share/nginx/html:ro" tianon/true```
-0. ```docker run -d --name service1 nginx```
+0. ```docker run -d --name service1 --volumes-from data1 nginx```
 0. ```docker run --link service1:webs aztecrex/curl http://webs``` .
 
 Here's what happened. You created a data volume based on *tianon/true*. Then
@@ -189,7 +189,7 @@ docker-machine stop default
 Create an external key store:
 ```bash
 docker-machine create -d virtualbox --virtualbox-memory 512 keystore
-val $(docker-machine env keystore)
+eval $(docker-machine env keystore)
 docker run -d \
     -p "8500:8500" \
     -h "consul" \
