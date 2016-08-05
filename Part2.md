@@ -176,7 +176,7 @@ docker-machine stop default
 
 Create the external key store:
 ```bash
-docker-machine create -d virtualbox keystore
+docker-machine create -d virtualbox --virtualbox-memory 512 keystore
 val $(docker-machine env keystore)
 docker run -d \
     -p "8500:8500" \
@@ -189,6 +189,7 @@ Create the managing node:
 ```bash
 docker-machine create \
     -d virtualbox \
+    --virtualbox-memory 512 \
     --swarm --swarm-master \
     --swarm-discovery="consul://$(docker-machine ip keystore):8500" \
     --engine-opt="cluster-store=consul://$(docker-machine ip keystore):8500" \
@@ -199,6 +200,7 @@ docker-machine create \
 Create additional agent nodes:
 ```bash
 docker-machine create -d virtualbox \
+    --virtualbox-memory 512 \
     --swarm \
     --swarm-discovery="consul://$(docker-machine ip keystore):8500" \
     --engine-opt="cluster-store=consul://$(docker-machine ip keystore):8500" \
@@ -206,6 +208,7 @@ docker-machine create -d virtualbox \
   agent-a
 
 docker-machine create -d virtualbox \
+    --virtualbox-memory 512 \
     --swarm \
     --swarm-discovery="consul://$(docker-machine ip keystore):8500" \
     --engine-opt="cluster-store=consul://$(docker-machine ip keystore):8500" \
@@ -214,9 +217,38 @@ docker-machine create -d virtualbox \
 
 ```
 
-Connect to the master machine ```eval $(docker-machine env --swarm manager)``` and get some information ```docker info``` .
+Connect to the master machine ```eval $(docker-machine env --swarm manager)```
+and get some information ```docker info``` .
 
+Now bring up the application ```docker-compose buidl```
+and  ```docker-compose up -d``` (You may have to
+run this twice due to some timing problems). Now run ```docker ps```
+to see where the containers are running. Use your browser to see
+the application on the machine where the load balancer is running.
 
+Restore your former default docker machine (if you had one) with
+```bash
+docker-machine stop agent-a agent-b manager
+docker-machine rm -f agent-a agent-b manager
+docker-machine start default
+eval $(docker-machine env default)
+```
+
+## Final Thoughts
+
+This workshop only hints at the power of container composition and
+scheduling. With Swarm
+and other schedulers, you can scale the number of containers up and down
+as needed by load.  Projects such as https://github.com/ehazlett/interlock
+address the need to register and de-register containers with a load
+balancer.  A number of volume drivers allow sharing data between containers
+running on different machines.
+
+Thanks to everyone who attended this workshop series. If you have suggestions
+to improve the presentation, this documentation, or the samples, I'll look
+for your PR.
+
+-=greg
 
 
 
