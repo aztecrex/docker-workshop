@@ -1,7 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head><title>Composed</title></head>
+<head>
+  <title>Composed</title>
+  <script src="jquery-1.12.4.min.js"></script>
+</head>
 <body>
   <p>Maintain composure at all times.</p>
+  <div id="count">&nbsp;</div>
+  <script>
+  function getCount(have) {
+    $.ajax({
+        url : '/counter?have=' + have,
+        type : 'GET',
+        success : function(data) {
+          console.log("got data: " + data.count);
+          $('#count').text(data.count);
+          getCount(data.count);
+        },
+        error : function(request,error)
+        {
+          console.log("failed to get data: " + error);
+          getCount(have);
+        }
+    });
+  }
+  getCount(0);
+  </script>
 </body>
 </html>
