@@ -83,10 +83,41 @@ containers and any locally-built images.
 
 Make ```part2-b``` your working directory. Before doing anything, take a look
 at the ```docker-compose.yml``` file. This is a complete application with
-3 components: a Redis data store, a web service, and a load balancer.
+4 components: a Redis data store, two services, and a load balancer/static
+web server.
 
-Type ```docker-compose -d up``` .  The ```-d``` flag tells compose to
+Type ```docker-compose build``` . Notice all the services with source
+are built. This works from within any sub-directory.
+
+Type ```docker-compose up -d``` .  The ```-d``` flag tells compose to
 detach from your terminal. To see the logs, type ```docker-compose logs``` .
-```Ctl-C``` terminates the log roll.
+Press ```Ctl-C``` to terminate the log roll.
+
+Bring down the application with ```docker-compose down -v``` .
+
+Add an alias to quickly restart
+```bash
+alias kick='docker-compose down -v; docker-compose build; docker-compose up -d'
+```
+
+## Network Segmentation
+
+Say you want to protect your data store from any breach of your load
+balancer. In a data center, you might setup VLANS or even distinct
+physical cabling. For containers, Compose lets you create isolated networks
+within your application configuration.
+
+### Default network
+
+In the manual composition at the beginning of this workshop, you were
+able to link a new container to a container you had running already. Try
+that with the composed application.  With the application up,
+type ```docker run -it --link part2b_store_1:redis --rm redis redis-cli -h redis -p 6379```
+The error you see suggests that Compose is running your application in
+an isolated network. It is.
+
+### Specifying networks
+
+Lets 
 
 
