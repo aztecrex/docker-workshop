@@ -130,17 +130,94 @@ Add the version directive from the main compose configuration.
 Add service and storage networks to your override.
 
 ```yaml
-
+version: '2'
+services:
+  counter:
+    networks:
+      - service
+      - database
+  motd:
+    networks:
+      - service
+      - database
+  store:
+    networks:
+      - database
+  balancer:
+    networks:
+      - service
 networks:
-  front:
-    # Use a custom driver
-    driver: custom-driver-1
-  back:
-    # Use a custom driver which takes special options
-    driver: custom-driver-2
-    driver_opts:
-      foo: "1"
-      bar: "2"
+  service:
+  database:
 ```
+
+## Container Scheduling
+
+Sometimes called orchestration, container scheduling runs collaborating
+containers on groups of hosts according to a scheduling configuration.
+A scheduling rule could be "run this container on any available host",
+"always keep 3 containers from this image running at all times on
+separate hosts", or a variety of other rules supported by the scheduler.
+
+Docker provides its own scheduler, Docker Swarm, but many 3rd-party
+schedulers exist such as Kubernetes and AWS ECS.
+
+### Docker Swarm in a Local Sandbox
+
+To try out Swarm, you need Docker Machine. This is installed as part of
+the Docker tooling on Mac and Windows. On Linux it is a separate installation
+and is documented well on the Docker site.
+
+Stop your default docker machine (yours might not be named default):
+```bash
+docker-machine ls
+docker-machine stop default
+```
+
+Create the external key store:
+```bash
+docker-machine create -d virtualbox keystore
+val $(docker-machine env keystore)
+docker run -d \
+    -p "8500:8500" \
+    -h "consul" \
+    progrium/consul -server -bootstrap
+
+```
+
+Create the managing node:
+```bash
+docker-machine create \
+    -d virtualbox \
+    --swarm --swarm-master \
+    --swarm-discovery="consul://$(docker-machine ip keystore):8500" \
+    --engine-opt="cluster-store=consul://$(docker-machine ip keystore):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+    manager
+```
+
+Create additional agent nodes:
+```bash
+docker-machine create -d virtualbox \
+    --swarm \
+    --swarm-discovery="consul://$(docker-machine ip keystore):8500" \
+    --engine-opt="cluster-store=consul://$(docker-machine ip keystore):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+  agent-a
+
+docker-machine create -d virtualbox \
+    --swarm \
+    --swarm-discovery="consul://$(docker-machine ip keystore):8500" \
+    --engine-opt="cluster-store=consul://$(docker-machine ip keystore):8500" \
+    --engine-opt="cluster-advertise=eth1:2376" \
+  agent-b
+
+```
+
+Connect to the master machine ```eval $(docker-machine env --swarm manager)``` and get some information ```docker info``` .
+
+
+
+
 
 

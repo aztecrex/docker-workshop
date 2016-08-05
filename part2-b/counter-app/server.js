@@ -8,8 +8,8 @@ const bodyParser = require('body-parser');
 const PORT = 8080;
 
 // collaborators
-var client = redis.createClient('6379', 'r0.dat');
-var sclient = redis.createClient('6379', 'r0.dat'); // subscription only
+var client = redis.createClient('6379', 'store');
+var sclient = redis.createClient('6379', 'store'); // subscription only
 
 // awaiting service
 var queue = [];
