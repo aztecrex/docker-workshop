@@ -1,0 +1,26 @@
+version: '2'
+services:
+  # these services are totally micro
+  counter:
+    build: ./counter-app
+
+  motd:
+    build: ./motd-app
+
+  # NoSQL for you
+  store:
+    image: redis
+    volumes_from:
+      - store_config
+  store_config:
+    build: ./redis-config
+
+  # Web scale
+  balancer:
+    image: nginx
+    ports:
+      - 80:80
+    volumes_from:
+      - balancer_config
+  balancer_config:
+    build: ./nginx-config

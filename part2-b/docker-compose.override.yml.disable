@@ -1,0 +1,19 @@
+version: '2'
+services:
+  counter:
+    networks:
+      - service
+      - database
+  motd:
+    networks:
+      - service
+      - database
+  store:
+    networks:
+      - database
+  balancer:
+    networks:
+      - service
+networks:
+  service:
+  database:

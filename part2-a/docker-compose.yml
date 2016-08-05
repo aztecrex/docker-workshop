@@ -1,0 +1,13 @@
+version: '2'
+services:
+  data:
+    build: ./data
+  nginx:
+    image: nginx
+    volumes_from:
+      - data
+  curl:
+    image: aztecrex/curl
+    command: http://website
+    links:
+      - nginx:website
