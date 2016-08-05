@@ -116,8 +116,31 @@ type ```docker run -it --link part2b_store_1:redis --rm redis redis-cli -h redis
 The error you see suggests that Compose is running your application in
 an isolated network. It is.
 
-### Specifying networks
+### Docker Compose Override
 
-Lets 
+Create a file called ```docker-compose.override.yml``` in the *part2-b*
+directory. An override lets you make changes to a composition without
+touching the main configuration and is useful during development. The
+project's ```.gitignore``` includes that file so it won't be checked in.
+
+Add the version directive from the main compose configuration.
+
+### Add Networks
+
+Add service and storage networks to your override.
+
+```yaml
+
+networks:
+  front:
+    # Use a custom driver
+    driver: custom-driver-1
+  back:
+    # Use a custom driver which takes special options
+    driver: custom-driver-2
+    driver_opts:
+      foo: "1"
+      bar: "2"
+```
 
 
