@@ -110,9 +110,9 @@ use ```docker-machine ip default``` (or another name if you are not using
 ## Network Segmentation
 
 Say you want to protect your data store from any breach of your load
-balancer. In a data center, you might setup VLANS or even distinct
-physical cabling. For containers, Compose lets you create isolated networks
-within your application configuration.
+balancer. In a data center deployment without containers, you might setup
+VLANS or even distinct physical cabling. For containers, Compose lets you
+create isolated networks within your application configuration.
 
 ### Default network
 
@@ -230,13 +230,14 @@ docker-machine create -d virtualbox \
 ```
 
 Connect to the manager machine ```eval $(docker-machine env --swarm manager)```
-and get some information ```docker info``` .
+and get some information with ```docker info``` .
 
-Now bring up the application ```docker-compose build```
+Now bring up the application with ```docker-compose build```
 and  ```docker-compose up -d``` (You may have to
 run this twice due to some timing problems). Now run ```docker ps```
-to see where the containers are running. Use your browser to see
-the application on the machine where the load balancer is running.
+to see where the containers are running. Run ```docker-machine ip <name>```
+to get the IP address of the load balancer and use your browser to access
+the application on that machine.
 
 Restore your former default docker machine (if you had one) with
 ```bash
