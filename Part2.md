@@ -42,7 +42,9 @@ repeatable results.
 
 In a directory to which you can clone a project, clone the
 aztecrex/docker-workshop project from
-Github: ```git clone ```
+Github: ```git clone https://github.com/aztecrex/docker-workshop.git```
+(or pull master if you have it already). Make *part2-a* your working
+directory.
 
 Type ```docker-compose run curl``` . After some churning, you will see some
 HTML in the terminal. This command is performing pretty much what you did
@@ -64,7 +66,7 @@ services:
       - nginx:website
 ```
 
-This is the basic structure of all Docker Compose configurations. The heart
+This is a very simple composition. The heart
 of the configuration is a list of services, which are containers either
 pulled from a repository or built from source.  The *version* directive
 tells Compose about the grammar in use. You should use version 2 unless you
@@ -81,10 +83,14 @@ containers and any locally-built images.
 
 ## Self-contained Application
 
-Make ```part2-b``` your working directory. Before doing anything, take a look
+Make *part2-b* your working directory. Before doing anything, take a look
 at the ```docker-compose.yml``` file. This is a complete application with
 4 components: a Redis data store, two services, and a load balancer/static
 web server.
+
+Notice that in this configuration, there are no *links* keys. While
+conceptually simple, links have been deprecated by Docker in favor
+of *overlay networks* .
 
 Type ```docker-compose build``` . Notice all the services with source
 are built. This works from within any sub-directory.
@@ -95,10 +101,11 @@ Press ```Ctl-C``` to terminate the log roll.
 
 Bring down the application with ```docker-compose down -v``` .
 
-Add an alias to quickly restart
-```bash
-alias kick='docker-compose down -v; docker-compose build; docker-compose up -d'
-```
+Run ```docker ps``` to see all the running containers. Use your browser
+to access the application. If you are running docker without Docker
+Machine, the app is running on *localhost* . For Docker Machine
+use ```docker-machine ip default``` (or another name if you are not using
+*default* ) to obtain the host address.
 
 ## Network Segmentation
 
@@ -127,7 +134,7 @@ Add the version directive from the main compose configuration.
 
 ### Add Networks
 
-Add service and storage networks to your override.
+Add service and database networks to your override.
 
 ```yaml
 version: '2'
@@ -151,6 +158,11 @@ networks:
   database:
 ```
 
+Now bring your service up again with ```docker-compose down -v```
+and ```docker-compose up -d``` .  You will see it create
+the new networks. ```docker network ls``` lists all the networks.
+The application is still available in your browser.
+
 ## Container Scheduling
 
 Sometimes called orchestration, container scheduling runs collaborating
@@ -164,9 +176,9 @@ schedulers exist such as Kubernetes and AWS ECS.
 
 ### Docker Swarm in a Local Sandbox
 
-To try out Swarm, you need Docker Machine. This is installed as part of
+To try out Swarm, you can use Docker Machine. This is installed as part of
 the Docker tooling on Mac and Windows. On Linux it is a separate installation
-and is documented well on the Docker site.
+with good documentation on the Docker site.
 
 Stop your default docker machine (yours might not be named default):
 ```bash
@@ -174,7 +186,7 @@ docker-machine ls
 docker-machine stop default
 ```
 
-Create the external key store:
+Create an external key store:
 ```bash
 docker-machine create -d virtualbox --virtualbox-memory 512 keystore
 val $(docker-machine env keystore)
@@ -185,7 +197,7 @@ docker run -d \
 
 ```
 
-Create the managing node:
+Create a managing node:
 ```bash
 docker-machine create \
     -d virtualbox \
@@ -217,10 +229,10 @@ docker-machine create -d virtualbox \
 
 ```
 
-Connect to the master machine ```eval $(docker-machine env --swarm manager)```
+Connect to the manager machine ```eval $(docker-machine env --swarm manager)```
 and get some information ```docker info``` .
 
-Now bring up the application ```docker-compose buidl```
+Now bring up the application ```docker-compose build```
 and  ```docker-compose up -d``` (You may have to
 run this twice due to some timing problems). Now run ```docker ps```
 to see where the containers are running. Use your browser to see
