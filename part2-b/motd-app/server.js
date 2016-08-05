@@ -47,7 +47,7 @@ var fetch = function(cb) {
 const app = express();
 app.use(bodyParser.json());
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res, next) {
   fetch(function(err, curval){
     if(err) return next(err);
     var have = req.query.have || 0;
@@ -59,7 +59,7 @@ app.get('/', function (req, res) {
   });
 });
 
-app.put('/', function (req, res) {
+app.put('/', function (req, res, next) {
   client.multi()
     .set('message', req.body.message)
     .incr('serial')

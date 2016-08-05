@@ -31,7 +31,7 @@ var respond = function(res,count) {
 const app = express();
 app.use(bodyParser.json());
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res, next) {
   client.get('counter', function(err, curval) {
     if(err) return next(err);
     var counter = curval || 0;
@@ -44,7 +44,7 @@ app.get('/', function (req, res) {
   });
 });
 
-app.post('/', function (req, res) {
+app.post('/', function (req, res, next) {
   var by = req.body.add || 1;
   client.incrby('counter', by, function(err, counter) {
     if(err) return next(err);
